@@ -569,9 +569,16 @@ function runMatch() {
       let matchCount = 0;
       let urgentHit = 0;
       recipe.ingredients.forEach(ri => {
-        const hit = userIngredients.some(ui => ri.name.toLowerCase().includes(ui) || ui.includes(ri.name.toLowerCase()));
+        const riName = ri.name.toLowerCase();
+        const hit = userIngredients.some(ui => {
+          if (ui.length < 2 || riName.length < 2) return ui === riName; // 한 글자는 완전일치만 인정
+          return riName.includes(ui) || ui.includes(riName);
+        });
         if (hit) matchCount++;
-        if ([...urgentSet].some(u => ri.name.includes(u) || u.includes(ri.name))) urgentHit++;
+        if ([...urgentSet].some(u => {
+          if (u.length < 2 || ri.name.length < 2) return u === ri.name;
+          return ri.name.includes(u) || u.includes(ri.name);
+        })) urgentHit++;
       });
       return { recipe, matchCount, urgentHit };
     })
