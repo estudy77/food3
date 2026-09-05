@@ -285,7 +285,7 @@
       1인분 기준으로 재료량을 환산하는 중...
     </div>
     <div id="resultBox" style="display:none;">
-      <h1 style="font-size:18px;">추천 레시피 (1인분 환산)</h1>
+      <h1 style="font-size:18px;">추천 레시피(1인분)</h1>
       <p class="lead" style="margin-bottom:16px;">
         데모 레시피 DB에서 입력하신 재료와 매칭한 결과예요. 실제 서비스에서는 더 큰 레시피 DB와 AI 매칭이 사용됩니다.
       </p>
@@ -673,7 +673,7 @@ function renderResults(scored) {
 
     const badges = `
       <div class="badge-row">
-        <span class="badge badge-serving">1인분 환산</span>
+        <!-- <span class="badge badge-serving">1인분 환산</span> -->
         ${urgentHit > 0 ? `<span class="badge badge-urgent">임박 재료 ${urgentHit}개 포함</span>` : ""}
         <span class="badge badge-match">일치 재료 ${matchCount}개</span>
       </div>
@@ -684,7 +684,7 @@ function renderResults(scored) {
       const isUrgent = [...state.urgent].some(u => ing.name.includes(u) || u.includes(ing.name));
       return `<li class="${isUrgent ? 'urgent-ing' : ''}">
         <span class="name">${ing.name}${isUrgent ? " ⚠" : ""}</span>
-        <span class="amt">${converted}${ing.unit} <span style="color:#c9c0b3;">(원래 ${ing.amount}${ing.unit} · ${recipe.baseServings}인분)</span></span>
+        <span class="amt">${converted}${ing.unit}</span>
       </li>`;
     }).join("");
 
@@ -692,10 +692,12 @@ function renderResults(scored) {
       ${badges}
       <div class="recipe-title">${recipe.name}</div>
       <ul class="ing-list">${ingList}</ul>
+      <!--
       <div class="conv-note">
         ※ 원래 ${recipe.baseServings}인분 레시피를 1인분 기준(×${scale.toFixed(2)})으로 산술 환산한 데모 결과입니다.
         조리법·영양·안전성에 대한 판단은 제공하지 않습니다.
       </div>
+      -->
     `;
     list.appendChild(card);
   });
