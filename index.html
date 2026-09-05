@@ -564,18 +564,22 @@ function submitFeedback() {
   // 아래 SHEETS_WEBAPP_URL에 배포한 Apps Script 웹앱 URL을 넣으면
   // 피드백이 구글시트에도 함께 저장됩니다. 비워두면 로컬 저장만 동작합니다.
   // ---------------------------------------------------------------
-  const SHEETS_WEBAPP_URL = ""; // 예: "https://script.google.com/macros/s/xxxx/exec"
+  const SHEETS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwP0K7ATgs5yHwEJM1e7aWJZCihObS_LAvGErZ3Jk-wgzMfdK6OrwfWG544RtSBjtjJ/exec";
 
   let saveMsg = "로컬(브라우저)에 저장되었습니다.";
   if (SHEETS_WEBAPP_URL) {
+    // 주의: Content-Type을 "application/json"으로 두면 브라우저가 preflight(사전확인)
+    // 요청을 보내는데, Apps Script 웹앱은 이를 처리하지 못해 전송이 조용히 실패합니다.
+    // "text/plain"으로 보내야 preflight 없이 바로 전송됩니다.
+    // (Code.gs 쪽은 어차피 텍스트를 JSON.parse 하므로 내용은 그대로 JSON이어도 됩니다.)
     fetch(SHEETS_WEBAPP_URL, {
       method: "POST",
-      mode: "no-cors", // Apps Script 웹앱 특성상 no-cors로 전송
-      headers: { "Content-Type": "application/json" },
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify(record)
-    }).catch(() => {
+    }).catch((err) => {
       // 전송 실패해도 로컬 저장은 이미 완료된 상태
-      console.warn("Sheets 전송 실패 (로컬 저장은 완료됨)");
+      console.warn("Sheets 전송 실패 (로컬 저장은 완료됨):", err);
     });
     saveMsg = "로컬 저장 완료 + Google Sheets로 전송 시도했습니다.";
   }
