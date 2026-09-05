@@ -310,13 +310,13 @@
   <section class="screen" id="screen-input">
     <h1>지금 냉장고에 있는 재료를 알려주세요</h1>
 
-    <label class="field-label">영수증으로 자동 인식 (베타)</label>
+    <label class="field-label">영수증으로 자동 인식</label>
     <div class="hint">OCR로 재료명을 찾아 드려요. 인식이 정확하지 않을 수 있습니다.</div>
     <input type="file" id="receiptInput" accept="image/*" capture="environment" style="display:none" onchange="handleReceiptUpload(event)">
     <button class="btn btn-outline" style="margin-top:8px;" onclick="document.getElementById('receiptInput').click()">📷 영수증 촬영 · 업로드</button>
     <div class="hint" id="ocrStatus" style="display:none; margin-top:8px;"></div>
 
-    <label class="field-label">냉장고 사진으로 인식 (베타)</label>
+    <label class="field-label">냉장고 사진으로 인식</label>
     <!--
     <div class="hint">
       무료 AI 모델(MobileNet)로 사진 속 재료를 알아봅니다. 다만 이 모델은
@@ -325,7 +325,7 @@
       결과는 꼭 확인·수정해주세요.
     </div>
     -->
-    <div class="hint">베타 버전으로 브로콜리·오이·버섯·양배추·애호박 정도만 인식</div>
+    <div class="hint">베타 버전으로 브로콜리·오이·버섯·양배추·애호박 정도만 인식합니다.</div>
     <input type="file" id="fridgeInput" accept="image/*" capture="environment" style="display:none" onchange="handleFridgeUpload(event)">
     <img id="fridgeImgHidden" style="display:none" alt="">
     <button class="btn btn-outline" style="margin-top:8px;" onclick="document.getElementById('fridgeInput').click()">🥬 냉장고 사진 촬영 · 업로드</button>
