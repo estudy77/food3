@@ -339,55 +339,167 @@
 
 // ---- 데모 레시피 DB (기준 인분·재료량은 예시 데이터입니다) ----
 const RECIPE_DB = [
-  {
-    name: "두부 애호박 된장찌개",
-    baseServings: 3,
-    ingredients: [
-      { name: "두부", amount: 1, unit: "모" },
-      { name: "애호박", amount: 0.5, unit: "개" },
-      { name: "된장", amount: 2, unit: "큰술" },
-      { name: "대파", amount: 0.5, unit: "대" },
-      { name: "양파", amount: 0.5, unit: "개" }
-    ]
-  },
-  {
-    name: "계란 대파 볶음밥",
-    baseServings: 2,
-    ingredients: [
-      { name: "계란", amount: 2, unit: "개" },
-      { name: "대파", amount: 1, unit: "대" },
-      { name: "밥", amount: 2, unit: "공기" },
-      { name: "간장", amount: 1, unit: "큰술" }
-    ]
-  },
-  {
-    name: "돼지고기 애호박 볶음",
-    baseServings: 2,
-    ingredients: [
-      { name: "돼지고기", amount: 200, unit: "g" },
-      { name: "애호박", amount: 1, unit: "개" },
-      { name: "양파", amount: 0.5, unit: "개" },
-      { name: "고추장", amount: 1, unit: "큰술" }
-    ]
-  },
-  {
-    name: "간단 계란찜",
-    baseServings: 1,
-    ingredients: [
-      { name: "계란", amount: 3, unit: "개" },
-      { name: "물", amount: 100, unit: "ml" },
-      { name: "소금", amount: 1, unit: "꼬집" }
-    ]
-  },
-  {
-    name: "두부 계란 스크램블",
-    baseServings: 1,
-    ingredients: [
-      { name: "두부", amount: 0.5, unit: "모" },
-      { name: "계란", amount: 2, unit: "개" },
-      { name: "대파", amount: 0.3, unit: "대" }
-    ]
-  }
+  { name: "두부 애호박 된장찌개", baseServings: 3, ingredients: [
+    { name: "두부", amount: 1, unit: "모" }, { name: "애호박", amount: 0.5, unit: "개" },
+    { name: "된장", amount: 2, unit: "큰술" }, { name: "대파", amount: 0.5, unit: "대" }, { name: "양파", amount: 0.5, unit: "개" }
+  ]},
+  { name: "계란 대파 볶음밥", baseServings: 2, ingredients: [
+    { name: "계란", amount: 2, unit: "개" }, { name: "대파", amount: 1, unit: "대" },
+    { name: "밥", amount: 2, unit: "공기" }, { name: "간장", amount: 1, unit: "큰술" }
+  ]},
+  { name: "돼지고기 애호박 볶음", baseServings: 2, ingredients: [
+    { name: "돼지고기", amount: 200, unit: "g" }, { name: "애호박", amount: 1, unit: "개" },
+    { name: "양파", amount: 0.5, unit: "개" }, { name: "고추장", amount: 1, unit: "큰술" }
+  ]},
+  { name: "간단 계란찜", baseServings: 1, ingredients: [
+    { name: "계란", amount: 3, unit: "개" }, { name: "물", amount: 100, unit: "ml" }, { name: "소금", amount: 1, unit: "꼬집" }
+  ]},
+  { name: "두부 계란 스크램블", baseServings: 1, ingredients: [
+    { name: "두부", amount: 0.5, unit: "모" }, { name: "계란", amount: 2, unit: "개" }, { name: "대파", amount: 0.3, unit: "대" }
+  ]},
+  { name: "콩나물국", baseServings: 2, ingredients: [
+    { name: "콩나물", amount: 200, unit: "g" }, { name: "대파", amount: 0.5, unit: "대" },
+    { name: "다진마늘", amount: 1, unit: "큰술" }, { name: "소금", amount: 1, unit: "작은술" }
+  ]},
+  { name: "콩나물무침", baseServings: 2, ingredients: [
+    { name: "콩나물", amount: 200, unit: "g" }, { name: "다진마늘", amount: 0.5, unit: "큰술" },
+    { name: "참기름", amount: 1, unit: "큰술" }, { name: "소금", amount: 0.5, unit: "작은술" }
+  ]},
+  { name: "콩나물 돼지고기 볶음", baseServings: 2, ingredients: [
+    { name: "콩나물", amount: 200, unit: "g" }, { name: "돼지고기", amount: 150, unit: "g" },
+    { name: "고추장", amount: 1, unit: "큰술" }, { name: "대파", amount: 0.5, unit: "대" }
+  ]},
+  { name: "김치찌개", baseServings: 3, ingredients: [
+    { name: "김치", amount: 200, unit: "g" }, { name: "돼지고기", amount: 150, unit: "g" },
+    { name: "두부", amount: 0.5, unit: "모" }, { name: "대파", amount: 0.5, unit: "대" }
+  ]},
+  { name: "김치볶음밥", baseServings: 1, ingredients: [
+    { name: "김치", amount: 100, unit: "g" }, { name: "밥", amount: 1, unit: "공기" },
+    { name: "계란", amount: 1, unit: "개" }, { name: "참기름", amount: 1, unit: "큰술" }
+  ]},
+  { name: "김치 참치찌개", baseServings: 2, ingredients: [
+    { name: "김치", amount: 150, unit: "g" }, { name: "참치캔", amount: 1, unit: "캔" },
+    { name: "두부", amount: 0.5, unit: "모" }, { name: "대파", amount: 0.5, unit: "대" }
+  ]},
+  { name: "감자채볶음", baseServings: 2, ingredients: [
+    { name: "감자", amount: 2, unit: "개" }, { name: "당근", amount: 0.3, unit: "개" },
+    { name: "양파", amount: 0.3, unit: "개" }, { name: "소금", amount: 0.5, unit: "작은술" }
+  ]},
+  { name: "감자조림", baseServings: 3, ingredients: [
+    { name: "감자", amount: 3, unit: "개" }, { name: "간장", amount: 2, unit: "큰술" },
+    { name: "설탕", amount: 1, unit: "큰술" }, { name: "대파", amount: 0.5, unit: "대" }
+  ]},
+  { name: "감자수프", baseServings: 1, ingredients: [
+    { name: "감자", amount: 1, unit: "개" }, { name: "우유", amount: 200, unit: "ml" }, { name: "소금", amount: 1, unit: "꼬집" }
+  ]},
+  { name: "당근계란볶음", baseServings: 1, ingredients: [
+    { name: "당근", amount: 0.5, unit: "개" }, { name: "계란", amount: 2, unit: "개" }, { name: "소금", amount: 1, unit: "꼬집" }
+  ]},
+  { name: "소고기 무국", baseServings: 3, ingredients: [
+    { name: "소고기", amount: 150, unit: "g" }, { name: "무", amount: 0.3, unit: "개" },
+    { name: "대파", amount: 0.5, unit: "대" }, { name: "다진마늘", amount: 1, unit: "큰술" }
+  ]},
+  { name: "소고기 볶음", baseServings: 2, ingredients: [
+    { name: "소고기", amount: 200, unit: "g" }, { name: "양파", amount: 0.5, unit: "개" },
+    { name: "당근", amount: 0.3, unit: "개" }, { name: "간장", amount: 2, unit: "큰술" }
+  ]},
+  { name: "닭가슴살 야채볶음", baseServings: 1, ingredients: [
+    { name: "닭가슴살", amount: 150, unit: "g" }, { name: "브로콜리", amount: 0.5, unit: "개" }, { name: "소금", amount: 1, unit: "꼬집" }
+  ]},
+  { name: "닭볶음탕", baseServings: 3, ingredients: [
+    { name: "닭고기", amount: 500, unit: "g" }, { name: "감자", amount: 2, unit: "개" },
+    { name: "당근", amount: 0.5, unit: "개" }, { name: "고추장", amount: 2, unit: "큰술" }
+  ]},
+  { name: "닭가슴살 카레", baseServings: 2, ingredients: [
+    { name: "닭가슴살", amount: 200, unit: "g" }, { name: "감자", amount: 1, unit: "개" },
+    { name: "당근", amount: 0.5, unit: "개" }, { name: "카레가루", amount: 2, unit: "큰술" }
+  ]},
+  { name: "시금치나물", baseServings: 2, ingredients: [
+    { name: "시금치", amount: 200, unit: "g" }, { name: "다진마늘", amount: 0.5, unit: "큰술" }, { name: "참기름", amount: 1, unit: "큰술" }
+  ]},
+  { name: "시금치 계란말이", baseServings: 1, ingredients: [
+    { name: "시금치", amount: 50, unit: "g" }, { name: "계란", amount: 2, unit: "개" }, { name: "소금", amount: 1, unit: "꼬집" }
+  ]},
+  { name: "버섯볶음", baseServings: 2, ingredients: [
+    { name: "버섯", amount: 200, unit: "g" }, { name: "대파", amount: 0.5, unit: "대" },
+    { name: "다진마늘", amount: 0.5, unit: "큰술" }, { name: "간장", amount: 1, unit: "큰술" }
+  ]},
+  { name: "버섯전골", baseServings: 3, ingredients: [
+    { name: "버섯", amount: 300, unit: "g" }, { name: "두부", amount: 0.5, unit: "모" },
+    { name: "대파", amount: 1, unit: "대" }, { name: "돼지고기", amount: 100, unit: "g" }
+  ]},
+  { name: "가지볶음", baseServings: 2, ingredients: [
+    { name: "가지", amount: 2, unit: "개" }, { name: "대파", amount: 0.5, unit: "대" },
+    { name: "간장", amount: 1, unit: "큰술" }, { name: "다진마늘", amount: 0.5, unit: "큰술" }
+  ]},
+  { name: "가지덮밥", baseServings: 1, ingredients: [
+    { name: "가지", amount: 1, unit: "개" }, { name: "밥", amount: 1, unit: "공기" },
+    { name: "돼지고기", amount: 100, unit: "g" }, { name: "고추장", amount: 1, unit: "큰술" }
+  ]},
+  { name: "오이무침", baseServings: 2, ingredients: [
+    { name: "오이", amount: 1, unit: "개" }, { name: "고추장", amount: 1, unit: "큰술" }, { name: "식초", amount: 1, unit: "큰술" }
+  ]},
+  { name: "오이볶음", baseServings: 2, ingredients: [
+    { name: "오이", amount: 2, unit: "개" }, { name: "당근", amount: 0.3, unit: "개" }, { name: "소금", amount: 0.5, unit: "작은술" }
+  ]},
+  { name: "양배추전", baseServings: 2, ingredients: [
+    { name: "양배추", amount: 0.3, unit: "통" }, { name: "부침가루", amount: 3, unit: "큰술" }, { name: "계란", amount: 1, unit: "개" }
+  ]},
+  { name: "양배추 된장국", baseServings: 2, ingredients: [
+    { name: "양배추", amount: 0.2, unit: "통" }, { name: "된장", amount: 2, unit: "큰술" }, { name: "대파", amount: 0.5, unit: "대" }
+  ]},
+  { name: "새우볶음밥", baseServings: 1, ingredients: [
+    { name: "새우", amount: 100, unit: "g" }, { name: "밥", amount: 1, unit: "공기" },
+    { name: "계란", amount: 1, unit: "개" }, { name: "대파", amount: 0.3, unit: "대" }
+  ]},
+  { name: "새우 애호박볶음", baseServings: 2, ingredients: [
+    { name: "새우", amount: 150, unit: "g" }, { name: "애호박", amount: 1, unit: "개" }, { name: "다진마늘", amount: 0.5, unit: "큰술" }
+  ]},
+  { name: "오징어볶음", baseServings: 2, ingredients: [
+    { name: "오징어", amount: 1, unit: "마리" }, { name: "양파", amount: 0.5, unit: "개" }, { name: "고추장", amount: 2, unit: "큰술" }
+  ]},
+  { name: "오징어무침", baseServings: 2, ingredients: [
+    { name: "오징어", amount: 1, unit: "마리" }, { name: "오이", amount: 0.5, unit: "개" }, { name: "고추장", amount: 1, unit: "큰술" }
+  ]},
+  { name: "어묵볶음", baseServings: 2, ingredients: [
+    { name: "어묵", amount: 200, unit: "g" }, { name: "양파", amount: 0.3, unit: "개" }, { name: "간장", amount: 1, unit: "큰술" }
+  ]},
+  { name: "어묵탕", baseServings: 2, ingredients: [
+    { name: "어묵", amount: 200, unit: "g" }, { name: "무", amount: 0.2, unit: "개" }, { name: "대파", amount: 0.5, unit: "대" }
+  ]},
+  { name: "참치 김치볶음밥", baseServings: 1, ingredients: [
+    { name: "참치캔", amount: 1, unit: "캔" }, { name: "김치", amount: 100, unit: "g" }, { name: "밥", amount: 1, unit: "공기" }
+  ]},
+  { name: "참치 마요덮밥", baseServings: 1, ingredients: [
+    { name: "참치캔", amount: 1, unit: "캔" }, { name: "밥", amount: 1, unit: "공기" }, { name: "마요네즈", amount: 1, unit: "큰술" }
+  ]},
+  { name: "베이컨 계란볶음밥", baseServings: 1, ingredients: [
+    { name: "베이컨", amount: 3, unit: "줄" }, { name: "계란", amount: 1, unit: "개" }, { name: "밥", amount: 1, unit: "공기" }
+  ]},
+  { name: "베이컨 감자볶음", baseServings: 2, ingredients: [
+    { name: "베이컨", amount: 4, unit: "줄" }, { name: "감자", amount: 1, unit: "개" }, { name: "양파", amount: 0.3, unit: "개" }
+  ]},
+  { name: "치즈계란말이", baseServings: 1, ingredients: [
+    { name: "계란", amount: 2, unit: "개" }, { name: "치즈", amount: 1, unit: "장" }, { name: "소금", amount: 1, unit: "꼬집" }
+  ]},
+  { name: "라면 계란탕", baseServings: 1, ingredients: [
+    { name: "라면", amount: 1, unit: "개" }, { name: "계란", amount: 1, unit: "개" }, { name: "대파", amount: 0.3, unit: "대" }
+  ]},
+  { name: "멸치볶음", baseServings: 3, ingredients: [
+    { name: "멸치", amount: 100, unit: "g" }, { name: "간장", amount: 1, unit: "큰술" }, { name: "설탕", amount: 1, unit: "큰술" }
+  ]},
+  { name: "무생채", baseServings: 2, ingredients: [
+    { name: "무", amount: 0.3, unit: "개" }, { name: "고추장", amount: 1, unit: "큰술" }, { name: "식초", amount: 1, unit: "큰술" }
+  ]},
+  { name: "부추전", baseServings: 2, ingredients: [
+    { name: "부추", amount: 100, unit: "g" }, { name: "부침가루", amount: 3, unit: "큰술" }, { name: "계란", amount: 1, unit: "개" }
+  ]},
+  { name: "브로콜리 계란볶음", baseServings: 1, ingredients: [
+    { name: "브로콜리", amount: 0.5, unit: "개" }, { name: "계란", amount: 2, unit: "개" }, { name: "소금", amount: 1, unit: "꼬집" }
+  ]},
+  { name: "양파 계란국", baseServings: 2, ingredients: [
+    { name: "양파", amount: 1, unit: "개" }, { name: "계란", amount: 1, unit: "개" }, { name: "간장", amount: 1, unit: "큰술" }
+  ]}
 ];
 
 let state = {
