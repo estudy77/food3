@@ -159,12 +159,13 @@
     position: relative;
   }
   .recipe-card.top { border-color: var(--accent); background: #fffaf6; }
-  .badge-row { display:flex; gap:6px; margin-bottom:8px; flex-wrap: wrap; }
+  .badge-row { display:flex; gap:6px; margin-bottom:8px; flex-wrap: wrap; justify-content: flex-end; }
   .badge {
-    font-size: 11px;
+    font-size: 12.5px;
     font-weight: 700;
     padding: 3px 8px;
     border-radius: 6px;
+    border: 1px solid currentColor;
   }
   .badge-serving { background: #eef4ee; color: var(--good); }
   .badge-urgent { background: #fdeeea; color: var(--warn); }
@@ -261,6 +262,43 @@
       ※ 이 화면의 레시피 결과는 실제 AI가 아닌 <strong>샘플 데이터 기반 데모</strong>입니다.
       개인정보는 수집하지 않습니다.
     </p>
+
+    <div style="margin: 28px 0; display:flex; justify-content:center;">
+      <svg width="100%" height="auto" style="max-width: 380px;" viewBox="0 0 190 150" xmlns="http://www.w3.org/2000/svg">
+        <!-- 냉장고 몸체 -->
+        <rect x="45" y="10" width="80" height="130" rx="10" fill="#ffffff" stroke="var(--ink)" stroke-width="3"/>
+        <!-- 냉동실 구분선 -->
+        <line x1="45" y1="42" x2="125" y2="42" stroke="var(--ink)" stroke-width="3"/>
+        <!-- 손잡이 -->
+        <rect x="112" y="18" width="5" height="16" rx="2.5" fill="var(--ink)"/>
+        <rect x="112" y="54" width="5" height="24" rx="2.5" fill="var(--ink)"/>
+        <!-- 선반 -->
+        <line x1="45" y1="95" x2="125" y2="95" stroke="var(--line)" stroke-width="3"/>
+
+        <!-- 채소들: 냉장고 왼쪽 -->
+        <circle cx="20" cy="70" r="14" fill="var(--accent)"/>
+        <rect x="17" y="52" width="6" height="12" rx="3" fill="var(--good)"/>
+
+        <ellipse cx="22" cy="112" rx="15" ry="11" fill="var(--good)"/>
+
+        <!-- 채소들: 냉장고 오른쪽 -->
+        <circle cx="168" cy="65" r="12" fill="#e08a3e"/>
+        <rect x="163" y="50" width="10" height="10" rx="2" fill="var(--good)"/>
+
+        <rect x="152" y="95" width="30" height="14" rx="6" fill="var(--warn)" opacity="0.85"/>
+
+        <!-- 냉장고 안 재료 (선반 위) -->
+        <circle cx="63" cy="112" r="9" fill="var(--accent)"/>
+        <circle cx="85" cy="115" r="7" fill="var(--good)"/>
+        <rect x="98" y="107" width="16" height="16" rx="3" fill="#f1ece3" stroke="var(--line)" stroke-width="1.5"/>
+
+        <!-- 냉장고 안 재료 (위 칸) -->
+        <rect x="55" y="20" width="14" height="14" rx="3" fill="var(--good)" opacity="0.9"/>
+        <circle cx="82" cy="27" r="7" fill="var(--accent)"/>
+        <rect x="96" y="20" width="14" height="14" rx="3" fill="#e08a3e" opacity="0.9"/>
+      </svg>
+    </div>
+
     <div class="btn-row">
       <button class="btn btn-primary btn-block" onclick="goTo(2)">재료 입력하고 시작하기</button>
     </div>
@@ -293,8 +331,8 @@
 
     <label class="field-label">직접 입력<span style="color: var(--accent-dark); font-weight:500;">(쉼표(,)로 구분해서 입력)</span></label>
     <textarea id="ingredientInput" rows="3" placeholder="예: 두부, 애호박, 계란, 대파, 돼지고기"></textarea>
-    <div class="hint">입력 후 아래 "재료 확인하기"를 누르면 재료 칩이 만들어져요.</div>
-    <button class="btn btn-outline" style="margin-top:10px;" onclick="parseIngredients()">재료 확인하기</button>
+    <div class="hint">직접입력시만 "재료 확인하기"를 눌러주세요(업로드시 자동)</div>
+    <button class="btn btn-outline" style="margin-top:10px; border-color: var(--accent); color: var(--ink);" onclick="parseIngredients()">재료 확인하기</button>
 
     <label class="field-label">유통기한 임박 재료<span style="color: var(--accent-dark); font-weight:500;">(해당되면 클릭)</span></label>
     <div class="chip-wrap" id="chipWrap"></div>
@@ -617,7 +655,7 @@ async function handleFridgeUpload(event) {
     const merged = Array.from(new Set([...current, ...foundArr]));
     inputEl.value = merged.join(", ");
 
-    statusEl.textContent = `${foundArr.length}개 재료를 찾은 것 같아요: ${foundArr.join(", ")} (정확하지 않을 수 있으니 꼭 확인해주세요)`;
+    statusEl.textContent = `${foundArr.length}개 재료를 찾았어요: ${foundArr.join(", ")} (틀린게 있으면 "직접 입력" 창에서 수정)`;
     parseIngredients();
   } catch (err) {
     console.error("이미지 인식 오류:", err);
@@ -665,7 +703,7 @@ async function handleReceiptUpload(event) {
     const merged = Array.from(new Set([...current, ...found]));
     inputEl.value = merged.join(", ");
 
-    statusEl.textContent = `${found.length}개 재료를 찾았어요: ${found.join(", ")} (틀린 게 있으면 위 입력창에서 직접 수정해주세요)`;
+    statusEl.textContent = `${found.length}개 재료를 찾았어요: ${found.join(", ")} (틀린게 있으면 "직접 입력" 창에서 수정)`;
     parseIngredients();
   } catch (err) {
     console.error("OCR 오류:", err);
@@ -860,7 +898,7 @@ function renderResults(scored) {
       const converted = round(ing.amount * scale);
       const isUrgent = [...state.urgent].some(u => ing.name.includes(u) || u.includes(ing.name));
       return `<li class="${isUrgent ? 'urgent-ing' : ''}">
-        <span class="name">${ing.name}${isUrgent ? " ⚠" : ""}</span>
+        <span class="name">${ing.name}${isUrgent ? ' <span style="color: var(--warn);">⚠</span>' : ""}</span>
         <span class="amt">${converted}${ing.unit}</span>
       </li>`;
     }).join("");
@@ -875,7 +913,7 @@ function renderResults(scored) {
       <div class="recipe-title">${recipe.name}</div>
       <ul class="ing-list">${ingList}</ul>
       <div class="nutrition-note">
-        1인분 기준 약 ${nut.kcal}kcal · 단백질 ${nut.protein}g · 탄수화물 ${nut.carb}g · 지방 ${nut.fat}g<br>
+        <span style="color: var(--accent-dark); font-weight:700;">약 ${nut.kcal}kcal</span> · 단백질 ${nut.protein}g · 탄수화물 ${nut.carb}g · 지방 ${nut.fat}g ·
         나트륨 ${nut.sodium}mg · 당류 ${nut.sugar}g · 식이섬유 ${nut.fiber}g · 콜레스테롤 ${nut.chol}mg
         <!-- <span class="fine-print">※ 참고용 추정치입니다${missingNote}. 실제 값과 다를 수 있으며 영양 상담을 대체하지 않습니다.</span> -->
       </div>
