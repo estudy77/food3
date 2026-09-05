@@ -233,6 +233,8 @@
   .save-status { font-size: 12px; color: var(--sub); margin-top: 14px; }
 </style>
 <script src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2/dist/mobilenet.min.js"></script>
 </head>
 <body>
 <div class="app">
@@ -266,7 +268,7 @@
 
   <!-- 화면 2: 재료 입력 -->
   <section class="screen" id="screen-input">
-    <h1>지금 냉장고에 있는 재료를 알려주세요</h1>
+    <h1>지금 냉장고에 있는<br/>재료를 알려주세요</h1>
     <p class="lead">쉼표(,)로 구분해서 입력해주세요. 예: 두부, 애호박, 계란, 대파</p>
 
     <label class="field-label">영수증으로 자동 인식 (베타)</label>
@@ -277,6 +279,21 @@
     <input type="file" id="receiptInput" accept="image/*" capture="environment" style="display:none" onchange="handleReceiptUpload(event)">
     <button class="btn btn-outline" style="margin-top:8px;" onclick="document.getElementById('receiptInput').click()">📷 영수증 촬영 · 업로드</button>
     <div class="hint" id="ocrStatus" style="display:none; margin-top:8px;"></div>
+
+    <label class="field-label">냉장고 사진으로 인식 (베타)</label>
+    <!--
+    <div class="hint">
+      무료 AI 모델(MobileNet)로 사진 속 재료를 알아봅니다. 다만 이 모델은
+      <strong>브로콜리·오이·버섯·양배추·애호박</strong> 정도만 인식할 수 있고,
+      두부·계란·콩나물·고기류처럼 그 외 대부분의 재료는 못 알아볼 가능성이 높아요.
+      결과는 꼭 확인·수정해주세요.
+    </div>
+    -->
+    <div class="hint">베타 버전으로 브로콜리·오이·버섯·양배추·애호박 정도만 인식</div>
+    <input type="file" id="fridgeInput" accept="image/*" capture="environment" style="display:none" onchange="handleFridgeUpload(event)">
+    <img id="fridgeImgHidden" style="display:none" alt="">
+    <button class="btn btn-outline" style="margin-top:8px;" onclick="document.getElementById('fridgeInput').click()">🥬 냉장고 사진 촬영 · 업로드</button>
+    <div class="hint" id="fridgeStatus" style="display:none; margin-top:8px;"></div>
 
     <label class="field-label">또는 직접 입력</label>
     <textarea id="ingredientInput" rows="3" placeholder="예: 두부, 애호박, 계란, 대파, 돼지고기"></textarea>
@@ -317,7 +334,7 @@
     <p class="lead">솔직한 답변이 다음 단계 검증에 큰 도움이 됩니다.</p>
 
     <div class="feedback-block">
-      <div class="q">레시피 추천이 도움이 됐나요?</div>
+      <div class="q">이 레시피 추천이 도움이 됐나요?</div>
       <div class="opt-row">
         <button class="opt-btn" data-group="helpful" data-value="yes" onclick="selectOpt(this)">예, 도움됐어요</button>
         <button class="opt-btn" data-group="helpful" data-value="no" onclick="selectOpt(this)">아니요</button>
@@ -325,15 +342,15 @@
     </div>
 
     <div class="feedback-block">
-      <div class="q">1인분 양이 적당했나요?</div>
+      <div class="q">1인분 환산이 정확했나요?</div>
       <div class="opt-row">
-        <button class="opt-btn" data-group="accurate" data-value="yes" onclick="selectOpt(this)">적당했어요</button>
+        <button class="opt-btn" data-group="accurate" data-value="yes" onclick="selectOpt(this)">정확했어요</button>
         <button class="opt-btn" data-group="accurate" data-value="no" onclick="selectOpt(this)">아니었어요</button>
       </div>
-    </div> 
+    </div>
 
-    <label class="field-label">이유를 짧게 남겨주세요(선택)</label>
-    <textarea id="feedbackReason" rows="2" placeholder="예: 맛있어요 / 양이 부족했어요"></textarea>
+    <label class="field-label">이유를 짧게 남겨주세요 (선택)</label>
+    <textarea id="feedbackReason" rows="2" placeholder="예: 양이 딱 맞았어요 / 재료가 남을 것 같아요 등"></textarea>
 
     <div class="btn-row">
       <button class="btn btn-primary btn-block" id="feedbackSubmitBtn" disabled onclick="submitFeedback()">의견 제출하기</button>
@@ -546,6 +563,72 @@ function goTo(stepNum) {
   document.querySelectorAll(".steps .dot").forEach(d => {
     d.classList.toggle("done", Number(d.dataset.step) <= stepNum);
   });
+}
+
+// ---- 냉장고 사진 자동 인식 (베타): TensorFlow.js + MobileNet 무료 모델 사용 ----
+// 주의: MobileNet은 ImageNet 1000개 카테고리로 학습된 범용 이미지 분류 모델이라
+// 우리 레시피 재료(43종) 중 극히 일부(아래 매핑표)만 인식 가능합니다.
+let mobilenetModel = null;
+async function getMobilenetModel() {
+  if (!mobilenetModel) mobilenetModel = await mobilenet.load();
+  return mobilenetModel;
+}
+
+const IMAGENET_TO_KOREAN = {
+  "broccoli": "브로콜리",
+  "cucumber": "오이",
+  "mushroom": "버섯",
+  "head cabbage": "양배추",
+  "zucchini": "애호박",
+  "courgette": "애호박"
+};
+
+async function handleFridgeUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const statusEl = document.getElementById("fridgeStatus");
+  statusEl.style.display = "block";
+  statusEl.textContent = "사진 속 재료를 분석하는 중이에요... (처음 실행 시 모델을 내려받아 시간이 좀 걸려요)";
+
+  try {
+    const imgUrl = URL.createObjectURL(file);
+    const imgEl = document.getElementById("fridgeImgHidden");
+    await new Promise((resolve, reject) => {
+      imgEl.onload = resolve;
+      imgEl.onerror = reject;
+      imgEl.src = imgUrl;
+    });
+
+    const model = await getMobilenetModel();
+    const predictions = await model.classify(imgEl, 5);
+    console.log("MobileNet 예측 결과:", predictions);
+
+    const found = new Set();
+    predictions.forEach(p => {
+      const label = p.className.toLowerCase();
+      Object.keys(IMAGENET_TO_KOREAN).forEach(key => {
+        if (label.includes(key)) found.add(IMAGENET_TO_KOREAN[key]);
+      });
+    });
+    const foundArr = [...found];
+
+    if (foundArr.length === 0) {
+      statusEl.textContent = `이 모델이 인식 가능한 5개 재료(브로콜리·오이·버섯·양배추·애호박) 중 어떤 것도 찾지 못했어요. (모델이 가장 비슷하다고 본 것: "${predictions[0].className}") 아래에서 직접 입력해주세요.`;
+      return;
+    }
+
+    const inputEl = document.getElementById("ingredientInput");
+    const current = inputEl.value.split(",").map(s => s.trim()).filter(Boolean);
+    const merged = Array.from(new Set([...current, ...foundArr]));
+    inputEl.value = merged.join(", ");
+
+    statusEl.textContent = `${foundArr.length}개 재료를 찾은 것 같아요: ${foundArr.join(", ")} (정확하지 않을 수 있으니 꼭 확인해주세요)`;
+    parseIngredients();
+  } catch (err) {
+    console.error("이미지 인식 오류:", err);
+    statusEl.textContent = "인식 중 문제가 생겼어요. 아래에서 직접 입력해주세요.";
+  }
 }
 
 // ---- 영수증 자동 인식 (베타): Tesseract.js 무료 OCR 사용 ----
