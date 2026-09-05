@@ -1,1 +1,601 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>1인분 냉장고 파먹기 (MVP 데모)</title>
+<style>
+  :root {
+    --bg: #faf7f2;
+    --card: #ffffff;
+    --ink: #2b2620;
+    --sub: #7a7267;
+    --accent: #d97b4f;
+    --accent-dark: #b85f36;
+    --line: #e8e0d5;
+    --good: #4a7c59;
+    --warn: #c0392b;
+    --chip-bg: #f1ece3;
+    --chip-active: #d97b4f;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+  }
+  .app {
+    width: 100%;
+    max-width: 480px;
+    min-height: 100vh;
+    background: var(--card);
+    box-shadow: 0 0 40px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header .brand { font-weight: 700; font-size: 15px; }
+  .demo-badge {
+    font-size: 11px;
+    color: var(--accent-dark);
+    background: #fbe9de;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-weight: 600;
+  }
+  .steps {
+    display: flex;
+    gap: 6px;
+    padding: 10px 20px 0;
+  }
+  .steps .dot {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--line);
+  }
+  .steps .dot.done { background: var(--accent); }
 
+  .screen { display: none; flex: 1; padding: 24px 20px 32px; }
+  .screen.active { display: flex; flex-direction: column; }
+
+  h1 { font-size: 20px; margin: 0 0 8px; line-height: 1.4; }
+  .lead { color: var(--sub); font-size: 14px; line-height: 1.6; margin-bottom: 24px; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 13px 20px;
+    border-radius: 10px;
+    border: none;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity .15s;
+  }
+  .btn:active { opacity: .8; }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:disabled { background: #ddd3c5; cursor: not-allowed; }
+  .btn-outline { background: transparent; border: 1px solid var(--line); color: var(--ink); }
+  .btn-block { width: 100%; }
+  .btn-row { display: flex; gap: 10px; margin-top: auto; padding-top: 16px; }
+
+  textarea, input[type=text] {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: none;
+    background: #fffefc;
+  }
+  textarea:focus, input:focus { outline: 2px solid var(--accent); }
+  label.field-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 18px 0 8px;
+    display: block;
+  }
+  .hint { font-size: 12px; color: var(--sub); margin-top: 6px; }
+
+  .chip-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .chip {
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: var(--chip-bg);
+    font-size: 13px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .chip.urgent {
+    background: #fdeeea;
+    border-color: var(--warn);
+    color: var(--warn);
+    font-weight: 700;
+  }
+  .chip .x { opacity: .5; font-size: 11px; }
+
+  .empty-note {
+    font-size: 12px;
+    color: var(--sub);
+    background: #f6f2ec;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-top: 12px;
+  }
+
+  .loading { text-align:center; padding: 60px 10px; color: var(--sub); font-size: 14px; }
+  .spinner {
+    width: 34px; height: 34px; margin: 0 auto 16px;
+    border: 3px solid var(--line);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .recipe-card {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .recipe-card.top { border-color: var(--accent); background: #fffaf6; }
+  .badge-row { display:flex; gap:6px; margin-bottom:8px; flex-wrap: wrap; }
+  .badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+  }
+  .badge-serving { background: #eef4ee; color: var(--good); }
+  .badge-urgent { background: #fdeeea; color: var(--warn); }
+  .badge-match { background: #eef0f6; color: #47547a; }
+  .recipe-title { font-size: 16px; font-weight: 700; margin: 4px 0 10px; }
+  .ing-list { list-style: none; padding: 0; margin: 0; font-size: 13px; }
+  .ing-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px dashed var(--line);
+  }
+  .ing-list li:last-child { border-bottom: none; }
+  .ing-list .amt { color: var(--sub); }
+  .ing-list li.has.urgent-ing .name { color: var(--warn); font-weight: 700; }
+  .conv-note {
+    font-size: 11px;
+    color: var(--sub);
+    margin-top: 8px;
+    background: #f6f2ec;
+    padding: 8px 10px;
+    border-radius: 8px;
+  }
+
+  .feedback-block {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+  .feedback-block .q { font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+  .opt-row { display: flex; gap: 8px; margin-bottom: 4px; }
+  .opt-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: #fff;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .opt-btn.selected { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
+
+  .thanks { text-align: center; padding: 40px 10px; }
+  .thanks .big-check {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--good); color: #fff;
+    display: flex; align-items:center; justify-content:center;
+    font-size: 28px; margin: 0 auto 16px;
+  }
+  .save-status { font-size: 12px; color: var(--sub); margin-top: 14px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">1인분 냉장고 파먹기</div>
+    <div class="demo-badge">MVP 데모</div>
+  </header>
+  <div class="steps">
+    <div class="dot" data-step="1"></div>
+    <div class="dot" data-step="2"></div>
+    <div class="dot" data-step="3"></div>
+    <div class="dot" data-step="4"></div>
+  </div>
+
+  <!-- 화면 1: 시작 -->
+  <section class="screen active" id="screen-start">
+    <h1>냉장고에 있는 재료로<br/>오늘 뭐 해먹을지 알려드려요</h1>
+    <p class="lead">
+      1인가구를 위해 만든 서비스예요. 보유 재료를 입력하면
+      <strong>1인분 기준</strong>으로 계산된 레시피를 추천하고,
+      유통기한이 임박한 재료는 우선적으로 사용하는 레시피를 먼저 보여드려요.
+    </p>
+    <p class="empty-note">
+      ※ 이 화면의 레시피 결과는 실제 AI가 아닌 <strong>샘플 데이터 기반 데모</strong>입니다.
+      개인정보는 수집하지 않습니다.
+    </p>
+    <div class="btn-row">
+      <button class="btn btn-primary btn-block" onclick="goTo(2)">재료 입력하고 시작하기</button>
+    </div>
+  </section>
+
+  <!-- 화면 2: 재료 입력 -->
+  <section class="screen" id="screen-input">
+    <h1>지금 냉장고에 있는<br/>재료를 알려주세요</h1>
+    <p class="lead">쉼표(,)로 구분해서 입력해주세요. 예: 두부, 애호박, 계란, 대파</p>
+
+    <label class="field-label">보유 재료</label>
+    <textarea id="ingredientInput" rows="3" placeholder="예: 두부, 애호박, 계란, 대파, 돼지고기"></textarea>
+    <div class="hint">입력 후 아래 "재료 확인하기"를 누르면 재료 칩이 만들어져요.</div>
+    <button class="btn btn-outline" style="margin-top:10px;" onclick="parseIngredients()">재료 확인하기</button>
+
+    <label class="field-label">유통기한 임박 재료 (해당되면 클릭)</label>
+    <div class="hint">아래 칩 중에서 곧 상할 것 같은 재료를 눌러 표시해주세요.</div>
+    <div class="chip-wrap" id="chipWrap"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="goTo(1)">이전</button>
+      <button class="btn btn-primary" id="submitBtn" disabled onclick="runMatch()">레시피 확인하기</button>
+    </div>
+  </section>
+
+  <!-- 화면 3: 결과 -->
+  <section class="screen" id="screen-result">
+    <div id="loadingBox" class="loading">
+      <div class="spinner"></div>
+      1인분 기준으로 재료량을 환산하는 중...
+    </div>
+    <div id="resultBox" style="display:none;">
+      <h1 style="font-size:18px;">추천 레시피 (1인분 환산)</h1>
+      <p class="lead" style="margin-bottom:16px;">
+        데모 레시피 DB에서 입력하신 재료와 매칭한 결과예요. 실제 서비스에서는 더 큰 레시피 DB와 AI 매칭이 사용됩니다.
+      </p>
+      <div id="recipeList"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary btn-block" onclick="goTo(4)">이 결과에 대해 의견 남기기</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 화면 4: 피드백 -->
+  <section class="screen" id="screen-feedback">
+    <h1>결과가 도움이 되셨나요?</h1>
+    <p class="lead">솔직한 답변이 다음 단계 검증에 큰 도움이 됩니다.</p>
+
+    <div class="feedback-block">
+      <div class="q">이 레시피 추천이 도움이 됐나요?</div>
+      <div class="opt-row">
+        <button class="opt-btn" data-group="helpful" data-value="yes" onclick="selectOpt(this)">예, 도움됐어요</button>
+        <button class="opt-btn" data-group="helpful" data-value="no" onclick="selectOpt(this)">아니요</button>
+      </div>
+    </div>
+
+    <div class="feedback-block">
+      <div class="q">1인분 환산이 정확했나요?</div>
+      <div class="opt-row">
+        <button class="opt-btn" data-group="accurate" data-value="yes" onclick="selectOpt(this)">정확했어요</button>
+        <button class="opt-btn" data-group="accurate" data-value="no" onclick="selectOpt(this)">아니었어요</button>
+      </div>
+    </div>
+
+    <label class="field-label">이유를 짧게 남겨주세요 (선택)</label>
+    <textarea id="feedbackReason" rows="2" placeholder="예: 양이 딱 맞았어요 / 재료가 남을 것 같아요 등"></textarea>
+
+    <div class="btn-row">
+      <button class="btn btn-primary btn-block" id="feedbackSubmitBtn" disabled onclick="submitFeedback()">의견 제출하기</button>
+    </div>
+  </section>
+
+  <!-- 화면 4-완료 (제출 후) -->
+  <section class="screen" id="screen-thanks">
+    <div class="thanks">
+      <div class="big-check">✓</div>
+      <h1 style="font-size:17px;">의견 감사합니다!</h1>
+      <p class="lead">이 응답은 페인포인트 검증 데이터로 활용됩니다.</p>
+      <div class="save-status" id="saveStatus">로컬에 저장되었습니다.</div>
+      <button class="btn btn-outline" style="margin-top:20px;" onclick="resetAll()">처음으로 돌아가기</button>
+    </div>
+  </section>
+</div>
+
+<script>
+/* =========================================================
+   1인분 냉장고 파먹기 - MVP 데모
+   PRD Lite 매핑:
+   - 화면1 시작 / 화면2 재료입력 / 화면3 결과 / 화면4 피드백
+   - 기능1 재료 입력·매칭 / 기능2 1인분 환산 표시 / 기능3 임박 재료 우선순위
+   - AI 처리는 실제 모델 호출 없이 "규칙 기반 매칭 + 산술 환산"으로 데모 처리함
+     (PRD 제한사항: 영양/안전성 판단 없음, 존재하지 않는 레시피 생성 안 함)
+   ========================================================= */
+
+// ---- 데모 레시피 DB (기준 인분·재료량은 예시 데이터입니다) ----
+const RECIPE_DB = [
+  {
+    name: "두부 애호박 된장찌개",
+    baseServings: 3,
+    ingredients: [
+      { name: "두부", amount: 1, unit: "모" },
+      { name: "애호박", amount: 0.5, unit: "개" },
+      { name: "된장", amount: 2, unit: "큰술" },
+      { name: "대파", amount: 0.5, unit: "대" },
+      { name: "양파", amount: 0.5, unit: "개" }
+    ]
+  },
+  {
+    name: "계란 대파 볶음밥",
+    baseServings: 2,
+    ingredients: [
+      { name: "계란", amount: 2, unit: "개" },
+      { name: "대파", amount: 1, unit: "대" },
+      { name: "밥", amount: 2, unit: "공기" },
+      { name: "간장", amount: 1, unit: "큰술" }
+    ]
+  },
+  {
+    name: "돼지고기 애호박 볶음",
+    baseServings: 2,
+    ingredients: [
+      { name: "돼지고기", amount: 200, unit: "g" },
+      { name: "애호박", amount: 1, unit: "개" },
+      { name: "양파", amount: 0.5, unit: "개" },
+      { name: "고추장", amount: 1, unit: "큰술" }
+    ]
+  },
+  {
+    name: "간단 계란찜",
+    baseServings: 1,
+    ingredients: [
+      { name: "계란", amount: 3, unit: "개" },
+      { name: "물", amount: 100, unit: "ml" },
+      { name: "소금", amount: 1, unit: "꼬집" }
+    ]
+  },
+  {
+    name: "두부 계란 스크램블",
+    baseServings: 1,
+    ingredients: [
+      { name: "두부", amount: 0.5, unit: "모" },
+      { name: "계란", amount: 2, unit: "개" },
+      { name: "대파", amount: 0.3, unit: "대" }
+    ]
+  }
+];
+
+let state = {
+  ingredients: [],   // 파싱된 재료 목록
+  urgent: new Set(), // 임박 표시된 재료
+  matchedRecipes: [],
+  feedback: { helpful: null, accurate: null }
+};
+
+function goTo(stepNum) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  const map = {
+    1: "screen-start",
+    2: "screen-input",
+    3: "screen-result",
+    4: "screen-feedback"
+  };
+  document.getElementById(map[stepNum]).classList.add("active");
+  document.querySelectorAll(".steps .dot").forEach(d => {
+    d.classList.toggle("done", Number(d.dataset.step) <= stepNum);
+  });
+}
+
+// ---- 기능 1: 재료 입력 파싱 ----
+function parseIngredients() {
+  const raw = document.getElementById("ingredientInput").value;
+  const items = raw.split(",").map(s => s.trim()).filter(Boolean);
+  if (items.length === 0) {
+    alert("재료를 하나 이상 입력해주세요.");
+    return;
+  }
+  state.ingredients = items;
+  state.urgent = new Set();
+  renderChips();
+  document.getElementById("submitBtn").disabled = false;
+}
+
+function renderChips() {
+  const wrap = document.getElementById("chipWrap");
+  wrap.innerHTML = "";
+  state.ingredients.forEach(ing => {
+    const chip = document.createElement("div");
+    chip.className = "chip" + (state.urgent.has(ing) ? " urgent" : "");
+    chip.textContent = ing + (state.urgent.has(ing) ? " · 임박" : "");
+    chip.onclick = () => {
+      if (state.urgent.has(ing)) state.urgent.delete(ing);
+      else state.urgent.add(ing);
+      renderChips();
+    };
+    wrap.appendChild(chip);
+  });
+}
+
+// ---- 기능 1+2+3: 매칭 + 1인분 환산 + 임박 우선순위 ----
+function runMatch() {
+  goTo(3);
+  document.getElementById("loadingBox").style.display = "block";
+  document.getElementById("resultBox").style.display = "none";
+
+  // 데모용 처리 지연 (실제 AI 처리를 흉내)
+  setTimeout(() => {
+    const userIngredients = state.ingredients.map(i => i.toLowerCase());
+    const urgentSet = state.urgent;
+
+    // 매칭 점수 계산: 보유 재료와 겹치는 개수 + 임박 재료 포함 여부 가중치
+    const scored = RECIPE_DB.map(recipe => {
+      let matchCount = 0;
+      let urgentHit = 0;
+      recipe.ingredients.forEach(ri => {
+        const hit = userIngredients.some(ui => ri.name.toLowerCase().includes(ui) || ui.includes(ri.name.toLowerCase()));
+        if (hit) matchCount++;
+        if ([...urgentSet].some(u => ri.name.includes(u) || u.includes(ri.name))) urgentHit++;
+      });
+      return { recipe, matchCount, urgentHit };
+    })
+    .filter(r => r.matchCount > 0) // 최소 1개 이상 겹치는 레시피만
+    .sort((a, b) => {
+      // 기능3: 임박 재료 히트 수 우선, 그다음 매칭 개수
+      if (b.urgentHit !== a.urgentHit) return b.urgentHit - a.urgentHit;
+      return b.matchCount - a.matchCount;
+    })
+    .slice(0, 3);
+
+    state.matchedRecipes = scored;
+    renderResults(scored);
+    document.getElementById("loadingBox").style.display = "none";
+    document.getElementById("resultBox").style.display = "block";
+  }, 900);
+}
+
+function renderResults(scored) {
+  const list = document.getElementById("recipeList");
+  list.innerHTML = "";
+
+  if (scored.length === 0) {
+    list.innerHTML = `<div class="empty-note">입력하신 재료와 일치하는 데모 레시피가 없어요. (샘플 DB가 작아서 그렇습니다 — 실제 서비스에서는 더 많은 레시피가 매칭됩니다)</div>`;
+    return;
+  }
+
+  scored.forEach((item, idx) => {
+    const { recipe, matchCount, urgentHit } = item;
+    const scale = 1 / recipe.baseServings; // 1인분 환산 비율
+
+    const card = document.createElement("div");
+    card.className = "recipe-card" + (idx === 0 ? " top" : "");
+
+    const badges = `
+      <div class="badge-row">
+        <span class="badge badge-serving">1인분 환산</span>
+        ${urgentHit > 0 ? `<span class="badge badge-urgent">임박 재료 ${urgentHit}개 포함</span>` : ""}
+        <span class="badge badge-match">일치 재료 ${matchCount}개</span>
+      </div>
+    `;
+
+    const ingList = recipe.ingredients.map(ing => {
+      const converted = round(ing.amount * scale);
+      const isUrgent = [...state.urgent].some(u => ing.name.includes(u) || u.includes(ing.name));
+      return `<li class="${isUrgent ? 'urgent-ing' : ''}">
+        <span class="name">${ing.name}${isUrgent ? " ⚠" : ""}</span>
+        <span class="amt">${converted}${ing.unit} <span style="color:#c9c0b3;">(원래 ${ing.amount}${ing.unit} · ${recipe.baseServings}인분)</span></span>
+      </li>`;
+    }).join("");
+
+    card.innerHTML = `
+      ${badges}
+      <div class="recipe-title">${recipe.name}</div>
+      <ul class="ing-list">${ingList}</ul>
+      <div class="conv-note">
+        ※ 원래 ${recipe.baseServings}인분 레시피를 1인분 기준(×${scale.toFixed(2)})으로 산술 환산한 데모 결과입니다.
+        조리법·영양·안전성에 대한 판단은 제공하지 않습니다.
+      </div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+function round(n) {
+  return Math.round(n * 100) / 100;
+}
+
+// ---- 기능4: 피드백 수집 ----
+function selectOpt(btn) {
+  const group = btn.dataset.group;
+  document.querySelectorAll(`.opt-btn[data-group="${group}"]`).forEach(b => b.classList.remove("selected"));
+  btn.classList.add("selected");
+  state.feedback[group] = btn.dataset.value;
+  checkFeedbackReady();
+}
+
+function checkFeedbackReady() {
+  const ready = state.feedback.helpful && state.feedback.accurate;
+  document.getElementById("feedbackSubmitBtn").disabled = !ready;
+}
+
+function submitFeedback() {
+  const record = {
+    timestamp: new Date().toISOString(),
+    ingredients: state.ingredients,
+    urgentIngredients: [...state.urgent],
+    matchedRecipeNames: state.matchedRecipes.map(r => r.recipe.name),
+    helpful: state.feedback.helpful,
+    accurate: state.feedback.accurate,
+    reason: document.getElementById("feedbackReason").value.trim()
+  };
+
+  // 로컬 저장 (기본, 항상 동작)
+  const existing = JSON.parse(localStorage.getItem("mvp_feedback_log") || "[]");
+  existing.push(record);
+  localStorage.setItem("mvp_feedback_log", JSON.stringify(existing));
+
+  // ---------------------------------------------------------------
+  // [선택] Google Sheets 연동 (Apps Script 웹앱)
+  // PRD 5번 "Sheets 연동: 필요" 항목 대응.
+  // 아래 SHEETS_WEBAPP_URL에 배포한 Apps Script 웹앱 URL을 넣으면
+  // 피드백이 구글시트에도 함께 저장됩니다. 비워두면 로컬 저장만 동작합니다.
+  // ---------------------------------------------------------------
+  const SHEETS_WEBAPP_URL = ""; // 예: "https://script.google.com/macros/s/xxxx/exec"
+
+  let saveMsg = "로컬(브라우저)에 저장되었습니다.";
+  if (SHEETS_WEBAPP_URL) {
+    fetch(SHEETS_WEBAPP_URL, {
+      method: "POST",
+      mode: "no-cors", // Apps Script 웹앱 특성상 no-cors로 전송
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(record)
+    }).catch(() => {
+      // 전송 실패해도 로컬 저장은 이미 완료된 상태
+      console.warn("Sheets 전송 실패 (로컬 저장은 완료됨)");
+    });
+    saveMsg = "로컬 저장 완료 + Google Sheets로 전송 시도했습니다.";
+  }
+
+  document.getElementById("saveStatus").textContent = saveMsg;
+
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById("screen-thanks").classList.add("active");
+}
+
+function resetAll() {
+  state = { ingredients: [], urgent: new Set(), matchedRecipes: [], feedback: { helpful: null, accurate: null } };
+  document.getElementById("ingredientInput").value = "";
+  document.getElementById("chipWrap").innerHTML = "";
+  document.getElementById("submitBtn").disabled = true;
+  document.getElementById("feedbackReason").value = "";
+  document.querySelectorAll(".opt-btn").forEach(b => b.classList.remove("selected"));
+  document.getElementById("feedbackSubmitBtn").disabled = true;
+  goTo(1);
+}
+</script>
+</body>
+</html>
