@@ -89,7 +89,7 @@
   .btn-primary:disabled { background: #ddd3c5; cursor: not-allowed; }
   .btn-outline { background: transparent; border: 1px solid var(--line); color: var(--ink); }
   .btn-block { width: 100%; }
-  .btn-row { display: flex; gap: 10px; margin-top: auto; padding-top: 16px; }
+  .btn-row { display: flex; gap: 10px; margin-top: auto; padding-top: 16px; justify-content: center; }
 
   textarea, input[type=text] {
     width: 100%;
@@ -268,14 +268,10 @@
 
   <!-- 화면 2: 재료 입력 -->
   <section class="screen" id="screen-input">
-    <h1>지금 냉장고에 있는<br/>재료를 알려주세요</h1>
-    <p class="lead">쉼표(,)로 구분해서 입력해주세요. 예: 두부, 애호박, 계란, 대파</p>
+    <h1>지금 냉장고에 있는 재료를 알려주세요</h1>
 
     <label class="field-label">영수증으로 자동 인식 (베타)</label>
-    <div class="hint">
-      영수증 사진을 올리면 무료 OCR로 재료명을 찾아 아래 입력창에 채워드려요.
-      단, 인식이 정확하지 않을 수 있어요 — 결과를 꼭 확인하고 수정해주세요.
-    </div>
+    <div class="hint">OCR로 재료명을 찾아 드려요. 인식이 정확하지 않을 수 있습니다.</div>
     <input type="file" id="receiptInput" accept="image/*" capture="environment" style="display:none" onchange="handleReceiptUpload(event)">
     <button class="btn btn-outline" style="margin-top:8px;" onclick="document.getElementById('receiptInput').click()">📷 영수증 촬영 · 업로드</button>
     <div class="hint" id="ocrStatus" style="display:none; margin-top:8px;"></div>
@@ -295,13 +291,12 @@
     <button class="btn btn-outline" style="margin-top:8px;" onclick="document.getElementById('fridgeInput').click()">🥬 냉장고 사진 촬영 · 업로드</button>
     <div class="hint" id="fridgeStatus" style="display:none; margin-top:8px;"></div>
 
-    <label class="field-label">또는 직접 입력</label>
+    <label class="field-label">직접 입력<span style="color: var(--accent-dark); font-weight:500;">(쉼표(,)로 구분해서 입력)</span></label>
     <textarea id="ingredientInput" rows="3" placeholder="예: 두부, 애호박, 계란, 대파, 돼지고기"></textarea>
     <div class="hint">입력 후 아래 "재료 확인하기"를 누르면 재료 칩이 만들어져요.</div>
     <button class="btn btn-outline" style="margin-top:10px;" onclick="parseIngredients()">재료 확인하기</button>
 
-    <label class="field-label">유통기한 임박 재료 (해당되면 클릭)</label>
-    <div class="hint">아래 칩 중에서 곧 상할 것 같은 재료를 눌러 표시해주세요.</div>
+    <label class="field-label">유통기한 임박 재료<span style="color: var(--accent-dark); font-weight:500;">(해당되면 클릭)</span></label>
     <div class="chip-wrap" id="chipWrap"></div>
 
     <div class="btn-row">
@@ -331,26 +326,25 @@
   <!-- 화면 4: 피드백 -->
   <section class="screen" id="screen-feedback">
     <h1>결과가 도움이 되셨나요?</h1>
-    <p class="lead">솔직한 답변이 다음 단계 검증에 큰 도움이 됩니다.</p>
 
     <div class="feedback-block">
       <div class="q">이 레시피 추천이 도움이 됐나요?</div>
       <div class="opt-row">
-        <button class="opt-btn" data-group="helpful" data-value="yes" onclick="selectOpt(this)">예, 도움됐어요</button>
-        <button class="opt-btn" data-group="helpful" data-value="no" onclick="selectOpt(this)">아니요</button>
+        <button class="opt-btn" data-group="helpful" data-value="yes" onclick="selectOpt(this)">예</button>
+        <button class="opt-btn" data-group="helpful" data-value="no" onclick="selectOpt(this)">아니오</button>
       </div>
     </div>
 
     <div class="feedback-block">
-      <div class="q">1인분 환산이 정확했나요?</div>
+      <div class="q">1인분 양이 적당했나요?</div>
       <div class="opt-row">
-        <button class="opt-btn" data-group="accurate" data-value="yes" onclick="selectOpt(this)">정확했어요</button>
+        <button class="opt-btn" data-group="accurate" data-value="yes" onclick="selectOpt(this)">적당했어요</button>
         <button class="opt-btn" data-group="accurate" data-value="no" onclick="selectOpt(this)">아니었어요</button>
       </div>
     </div>
 
     <label class="field-label">이유를 짧게 남겨주세요 (선택)</label>
-    <textarea id="feedbackReason" rows="2" placeholder="예: 양이 딱 맞았어요 / 재료가 남을 것 같아요 등"></textarea>
+    <textarea id="feedbackReason" rows="2" placeholder="예: 맛있었어요 / 양이 부족했어요 등"></textarea>
 
     <div class="btn-row">
       <button class="btn btn-primary btn-block" id="feedbackSubmitBtn" disabled onclick="submitFeedback()">의견 제출하기</button>
