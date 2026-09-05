@@ -180,6 +180,21 @@
   .ing-list li:last-child { border-bottom: none; }
   .ing-list .amt { color: var(--sub); }
   .ing-list li.has.urgent-ing .name { color: var(--warn); font-weight: 700; }
+  .nutrition-note {
+    font-size: 12.5px;
+    color: var(--ink);
+    margin-top: 10px;
+    background: #eef4ee;
+    padding: 9px 11px;
+    border-radius: 8px;
+    line-height: 1.6;
+  }
+  .nutrition-note .fine-print {
+    display: block;
+    font-size: 10.5px;
+    color: var(--sub);
+    margin-top: 4px;
+  }
   .conv-note {
     font-size: 11px;
     color: var(--sub);
@@ -581,6 +596,74 @@ async function handleReceiptUpload(event) {
   }
 }
 
+// ---- 영양가 참고 데이터 (재료의 "레시피에 적힌 단위 1개" 기준 추정치) ----
+// 주의: 공식 식품성분표를 대조한 정확한 값이 아니라, 데모용 참고 추정치입니다.
+// 실제 제품·품종·조리법에 따라 크게 달라질 수 있어 영양 상담 등 용도로 쓰면 안 됩니다.
+const NUTRITION_PER_UNIT = {
+  "두부": { kcal: 252, protein: 24, carb: 6, fat: 15 },
+  "애호박": { kcal: 34, protein: 3, carb: 6, fat: 0.4 },
+  "된장": { kcal: 36, protein: 2, carb: 4, fat: 1 },
+  "대파": { kcal: 16, protein: 1, carb: 3.5, fat: 0.1 },
+  "양파": { kcal: 80, protein: 2, carb: 18, fat: 0.2 },
+  "계란": { kcal: 78, protein: 6.5, carb: 0.6, fat: 5.5 },
+  "밥": { kcal: 273, protein: 5.7, carb: 59, fat: 0.6 },
+  "간장": { kcal: 8, protein: 1.2, carb: 0.8, fat: 0 },
+  "돼지고기": { kcal: 2.5, protein: 0.17, carb: 0, fat: 0.2 },
+  "고추장": { kcal: 44, protein: 1, carb: 7, fat: 0.4 },
+  "물": { kcal: 0, protein: 0, carb: 0, fat: 0 },
+  "소금": { kcal: 0, protein: 0, carb: 0, fat: 0 },
+  "콩나물": { kcal: 0.3, protein: 0.03, carb: 0.06, fat: 0.002 },
+  "다진마늘": { kcal: 15, protein: 0.6, carb: 3.3, fat: 0.05 },
+  "참기름": { kcal: 115, protein: 0, carb: 0, fat: 13 },
+  "김치": { kcal: 0.35, protein: 0.02, carb: 0.04, fat: 0.005 },
+  "참치캔": { kcal: 189, protein: 24, carb: 0, fat: 10 },
+  "감자": { kcal: 116, protein: 3, carb: 26, fat: 0.15 },
+  "당근": { kcal: 62, protein: 1.4, carb: 15, fat: 0.3 },
+  "설탕": { kcal: 46, protein: 0, carb: 12, fat: 0 },
+  "우유": { kcal: 0.61, protein: 0.032, carb: 0.048, fat: 0.033 },
+  "소고기": { kcal: 2.5, protein: 0.26, carb: 0, fat: 0.15 },
+  "무": { kcal: 180, protein: 6, carb: 40, fat: 1 },
+  "닭가슴살": { kcal: 1.1, protein: 0.23, carb: 0, fat: 0.012 },
+  "브로콜리": { kcal: 102, protein: 8.4, carb: 21, fat: 1.2 },
+  "닭고기": { kcal: 2.15, protein: 0.18, carb: 0, fat: 0.15 },
+  "카레가루": { kcal: 26, protein: 1, carb: 4.6, fat: 1.1 },
+  "시금치": { kcal: 0.23, protein: 0.029, carb: 0.036, fat: 0.004 },
+  "버섯": { kcal: 0.22, protein: 0.031, carb: 0.033, fat: 0.003 },
+  "가지": { kcal: 38, protein: 1.5, carb: 9, fat: 0.3 },
+  "오이": { kcal: 23, protein: 1, carb: 5.4, fat: 0.15 },
+  "식초": { kcal: 3, protein: 0, carb: 0.1, fat: 0 },
+  "양배추": { kcal: 250, protein: 13, carb: 58, fat: 1 },
+  "부침가루": { kcal: 35, protein: 0.8, carb: 7.5, fat: 0.1 },
+  "새우": { kcal: 0.85, protein: 0.18, carb: 0.01, fat: 0.01 },
+  "오징어": { kcal: 230, protein: 40, carb: 5, fat: 3.5 },
+  "어묵": { kcal: 1.1, protein: 0.1, carb: 0.12, fat: 0.03 },
+  "마요네즈": { kcal: 95, protein: 0.15, carb: 0.3, fat: 10.5 },
+  "베이컨": { kcal: 54, protein: 1.4, carb: 0.1, fat: 5.4 },
+  "치즈": { kcal: 66, protein: 3.6, carb: 0.4, fat: 5.4 },
+  "라면": { kcal: 500, protein: 10, carb: 65, fat: 18 },
+  "멸치": { kcal: 3.3, protein: 0.55, carb: 0, fat: 0.08 },
+  "부추": { kcal: 0.28, protein: 0.026, carb: 0.04, fat: 0.003 }
+};
+
+function calcNutrition(recipe, scale) {
+  let kcal = 0, protein = 0, carb = 0, fat = 0, missing = [];
+  recipe.ingredients.forEach(ing => {
+    const n = NUTRITION_PER_UNIT[ing.name];
+    if (!n) { missing.push(ing.name); return; }
+    kcal += ing.amount * n.kcal;
+    protein += ing.amount * n.protein;
+    carb += ing.amount * n.carb;
+    fat += ing.amount * n.fat;
+  });
+  return {
+    kcal: round(kcal * scale),
+    protein: round(protein * scale),
+    carb: round(carb * scale),
+    fat: round(fat * scale),
+    missing
+  };
+}
+
 // ---- 기능 1: 재료 입력 파싱 ----
 function parseIngredients() {
   const raw = document.getElementById("ingredientInput").value;
@@ -688,10 +771,19 @@ function renderResults(scored) {
       </li>`;
     }).join("");
 
+    const nut = calcNutrition(recipe, scale);
+    const missingNote = nut.missing.length > 0
+      ? ` (${nut.missing.join(", ")}은 데이터 없어 제외)`
+      : "";
+
     card.innerHTML = `
       ${badges}
       <div class="recipe-title">${recipe.name}</div>
       <ul class="ing-list">${ingList}</ul>
+      <div class="nutrition-note">
+        1인분 기준 약 ${nut.kcal}kcal · 단백질 ${nut.protein}g · 탄수화물 ${nut.carb}g · 지방 ${nut.fat}g
+        <!-- <span class="fine-print">※ 참고용 추정치입니다${missingNote}. 실제 값과 다를 수 있으며 영양 상담을 대체하지 않습니다.</span> -->
+      </div>
       <!--
       <div class="conv-note">
         ※ 원래 ${recipe.baseServings}인분 레시피를 1인분 기준(×${scale.toFixed(2)})으로 산술 환산한 데모 결과입니다.
