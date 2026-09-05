@@ -320,18 +320,18 @@
     <!--
     <div class="hint">
       무료 AI 모델(MobileNet)로 사진 속 재료를 알아봅니다. 다만 이 모델은
-      <strong>브로콜리·오이·버섯·양배추·애호박</strong> 정도만 인식할 수 있고,
+      <strong>브로콜리·오이·버섯·양배추·애호박·콜리플라워·파프리카·옥수수·바나나·오렌지·딸기·파인애플·레몬·사과·무화과·석류</strong> 정도만 인식할 수 있고,
       두부·계란·콩나물·고기류처럼 그 외 대부분의 재료는 못 알아볼 가능성이 높아요.
       결과는 꼭 확인·수정해주세요.
     </div>
     -->
-    <div class="hint">베타 버전으로 브로콜리·오이·버섯·양배추·애호박 정도만 인식합니다.</div>
+    <div class="hint">베타 버전으로 브로콜리·오이·버섯·양배추·애호박·콜리플라워·파프리카·옥수수·바나나·오렌지·딸기·파인애플·레몬·사과·무화과·석류 정도만 인식합니다.</div>
     <input type="file" id="fridgeInput" accept="image/*" capture="environment" style="display:none" onchange="handleFridgeUpload(event)">
     <img id="fridgeImgHidden" style="display:none" alt="">
     <button class="btn btn-outline" style="margin-top:8px;" onclick="document.getElementById('fridgeInput').click()">🥬 냉장고 사진 촬영 · 업로드</button>
     <div class="hint" id="fridgeStatus" style="display:none; margin-top:8px;"></div>
 
-    <label class="field-label">직접 입력<span style="color: var(--accent-dark); font-weight:500;">(쉼표(,)로 구분해서 입력)</span> - <span style="font-size:11px; color: var(--sub); font-weight:400;">베타버전으로 현재 43개 재료만 인식</span></label>
+    <label class="field-label">직접 입력<span style="color: var(--accent-dark); font-weight:500;">(쉼표(,)로 구분해서 입력)</span> - <span style="font-size:11px; color: var(--sub); font-weight:400;">베타버전으로 현재 75개 재료만 인식</span></label>
     <textarea id="ingredientInput" rows="3" placeholder="예: 두부, 애호박, 계란, 대파, 돼지고기"></textarea>
     <div class="hint">직접입력시만 "재료 확인하기"를 눌러주세요(업로드시 자동)</div>
     <button class="btn btn-outline" style="margin-top:10px; border-color: var(--accent); color: var(--ink);" onclick="parseIngredients()">재료 확인하기</button>
@@ -575,6 +575,134 @@ const RECIPE_DB = [
   ]},
   { name: "양파 계란국", baseServings: 2, ingredients: [
     { name: "양파", amount: 1, unit: "개" }, { name: "계란", amount: 1, unit: "개" }, { name: "간장", amount: 1, unit: "큰술" }
+  ]},
+  { name: "고구마맛탕", baseServings: 2, ingredients: [
+    { name: "고구마", amount: 2, unit: "개" }, { name: "설탕", amount: 2, unit: "큰술" }
+  ]},
+  { name: "고구마우유쉐이크", baseServings: 1, ingredients: [
+    { name: "고구마", amount: 1, unit: "개" }, { name: "우유", amount: 200, unit: "ml" }, { name: "설탕", amount: 1, unit: "큰술" }
+  ]},
+  { name: "파프리카볶음", baseServings: 2, ingredients: [
+    { name: "파프리카", amount: 1, unit: "개" }, { name: "양파", amount: 0.3, unit: "개" }, { name: "소금", amount: 0.5, unit: "작은술" }
+  ]},
+  { name: "파프리카오이샐러드", baseServings: 2, ingredients: [
+    { name: "파프리카", amount: 1, unit: "개" }, { name: "오이", amount: 1, unit: "개" }, { name: "식초", amount: 1, unit: "큰술" }
+  ]},
+  { name: "옥수수콘치즈", baseServings: 2, ingredients: [
+    { name: "옥수수", amount: 1, unit: "캔" }, { name: "마요네즈", amount: 1, unit: "큰술" }, { name: "치즈", amount: 1, unit: "장" }
+  ]},
+  { name: "옥수수볶음밥", baseServings: 1, ingredients: [
+    { name: "옥수수", amount: 1, unit: "캔" }, { name: "밥", amount: 1, unit: "공기" }, { name: "계란", amount: 1, unit: "개" }
+  ]},
+  { name: "스팸김치볶음밥", baseServings: 1, ingredients: [
+    { name: "스팸", amount: 0.5, unit: "통" }, { name: "김치", amount: 100, unit: "g" }, { name: "밥", amount: 1, unit: "공기" }
+  ]},
+  { name: "스팸계란구이", baseServings: 1, ingredients: [
+    { name: "스팸", amount: 0.5, unit: "통" }, { name: "계란", amount: 1, unit: "개" }
+  ]},
+  { name: "우동볶음", baseServings: 1, ingredients: [
+    { name: "우동사리", amount: 1, unit: "개" }, { name: "돼지고기", amount: 100, unit: "g" }, { name: "양파", amount: 0.3, unit: "개" }
+  ]},
+  { name: "우동국", baseServings: 1, ingredients: [
+    { name: "우동사리", amount: 1, unit: "개" }, { name: "대파", amount: 0.5, unit: "대" }, { name: "간장", amount: 1, unit: "큰술" }
+  ]},
+  { name: "청양고추계란찜", baseServings: 1, ingredients: [
+    { name: "청양고추", amount: 1, unit: "개" }, { name: "계란", amount: 2, unit: "개" }, { name: "소금", amount: 1, unit: "꼬집" }
+  ]},
+  { name: "깻잎무침", baseServings: 2, ingredients: [
+    { name: "깻잎", amount: 10, unit: "장" }, { name: "다진마늘", amount: 0.5, unit: "큰술" }, { name: "참기름", amount: 1, unit: "큰술" }
+  ]},
+  { name: "깻잎전", baseServings: 2, ingredients: [
+    { name: "깻잎", amount: 5, unit: "장" }, { name: "부침가루", amount: 3, unit: "큰술" }, { name: "계란", amount: 1, unit: "개" }
+  ]},
+  { name: "숙주볶음", baseServings: 2, ingredients: [
+    { name: "숙주", amount: 200, unit: "g" }, { name: "다진마늘", amount: 0.5, unit: "큰술" }, { name: "소금", amount: 0.5, unit: "작은술" }
+  ]},
+  { name: "미역국", baseServings: 2, ingredients: [
+    { name: "미역", amount: 20, unit: "g" }, { name: "소고기", amount: 100, unit: "g" }, { name: "다진마늘", amount: 0.5, unit: "큰술" }
+  ]},
+  { name: "콜리플라워스테이크", baseServings: 2, ingredients: [
+    { name: "콜리플라워", amount: 0.5, unit: "개" }, { name: "소금", amount: 1, unit: "꼬집" }, { name: "참기름", amount: 1, unit: "큰술" }
+  ]},
+  { name: "아보카도덮밥", baseServings: 1, ingredients: [
+    { name: "아보카도", amount: 0.5, unit: "개" }, { name: "밥", amount: 1, unit: "공기" }, { name: "계란", amount: 1, unit: "개" }
+  ]},
+  { name: "토마토계란볶음", baseServings: 2, ingredients: [
+    { name: "토마토", amount: 2, unit: "개" }, { name: "계란", amount: 2, unit: "개" }, { name: "소금", amount: 1, unit: "꼬집" }
+  ]},
+  { name: "양상추샐러드", baseServings: 2, ingredients: [
+    { name: "양상추", amount: 0.3, unit: "개" }, { name: "오이", amount: 0.5, unit: "개" }, { name: "마요네즈", amount: 1, unit: "큰술" }
+  ]},
+  { name: "소세지야채볶음", baseServings: 2, ingredients: [
+    { name: "소세지", amount: 3, unit: "개" }, { name: "양파", amount: 0.3, unit: "개" }, { name: "파프리카", amount: 0.5, unit: "개" }
+  ]},
+  { name: "만두국", baseServings: 2, ingredients: [
+    { name: "만두", amount: 8, unit: "개" }, { name: "대파", amount: 0.5, unit: "대" }, { name: "계란", amount: 1, unit: "개" }
+  ]},
+  { name: "만두전골", baseServings: 3, ingredients: [
+    { name: "만두", amount: 10, unit: "개" }, { name: "두부", amount: 0.5, unit: "모" }, { name: "버섯", amount: 100, unit: "g" }
+  ]},
+  { name: "떡볶이", baseServings: 2, ingredients: [
+    { name: "떡", amount: 200, unit: "g" }, { name: "고추장", amount: 2, unit: "큰술" }, { name: "대파", amount: 0.5, unit: "대" }
+  ]},
+  { name: "청경채볶음", baseServings: 2, ingredients: [
+    { name: "청경채", amount: 2, unit: "개" }, { name: "다진마늘", amount: 0.5, unit: "큰술" }, { name: "참기름", amount: 1, unit: "큰술" }
+  ]},
+  { name: "바나나스무디", baseServings: 1, ingredients: [
+    { name: "바나나", amount: 1, unit: "개" }, { name: "우유", amount: 200, unit: "ml" }
+  ]},
+  { name: "오렌지에이드", baseServings: 1, ingredients: [
+    { name: "오렌지", amount: 1, unit: "개" }, { name: "설탕", amount: 1, unit: "큰술" }, { name: "물", amount: 200, unit: "ml" }
+  ]},
+  { name: "딸기우유", baseServings: 1, ingredients: [
+    { name: "딸기", amount: 5, unit: "개" }, { name: "우유", amount: 200, unit: "ml" }, { name: "설탕", amount: 1, unit: "큰술" }
+  ]},
+  { name: "파인애플볶음밥", baseServings: 1, ingredients: [
+    { name: "파인애플", amount: 0.3, unit: "개" }, { name: "밥", amount: 1, unit: "공기" },
+    { name: "스팸", amount: 0.3, unit: "통" }, { name: "계란", amount: 1, unit: "개" }
+  ]},
+  { name: "과일샐러드", baseServings: 2, ingredients: [
+    { name: "딸기", amount: 5, unit: "개" }, { name: "바나나", amount: 1, unit: "개" }, { name: "오렌지", amount: 1, unit: "개" }
+  ]},
+  { name: "레몬에이드", baseServings: 1, ingredients: [
+    { name: "레몬", amount: 1, unit: "개" }, { name: "설탕", amount: 2, unit: "큰술" }, { name: "물", amount: 200, unit: "ml" }
+  ]},
+  { name: "사과주스", baseServings: 1, ingredients: [
+    { name: "사과", amount: 1, unit: "개" }, { name: "물", amount: 100, unit: "ml" }, { name: "설탕", amount: 1, unit: "큰술" }
+  ]},
+  { name: "사과샐러드", baseServings: 1, ingredients: [
+    { name: "사과", amount: 1, unit: "개" }, { name: "양상추", amount: 0.2, unit: "개" }, { name: "마요네즈", amount: 1, unit: "큰술" }
+  ]},
+  { name: "무화과우유셰이크", baseServings: 1, ingredients: [
+    { name: "무화과", amount: 3, unit: "개" }, { name: "우유", amount: 100, unit: "ml" }, { name: "설탕", amount: 1, unit: "큰술" }
+  ]},
+  { name: "석류에이드", baseServings: 1, ingredients: [
+    { name: "석류", amount: 0.3, unit: "개" }, { name: "설탕", amount: 1, unit: "큰술" }, { name: "물", amount: 200, unit: "ml" }
+  ]},
+  { name: "배사과샐러드", baseServings: 1, ingredients: [
+    { name: "배", amount: 0.5, unit: "개" }, { name: "사과", amount: 0.5, unit: "개" }, { name: "마요네즈", amount: 1, unit: "큰술" }
+  ]},
+  { name: "포도샐러드", baseServings: 1, ingredients: [
+    { name: "포도", amount: 15, unit: "알" }, { name: "양상추", amount: 0.2, unit: "개" }
+  ]},
+  { name: "단감샐러드", baseServings: 1, ingredients: [
+    { name: "감", amount: 0.5, unit: "개" }, { name: "양상추", amount: 0.2, unit: "개" }, { name: "마요네즈", amount: 1, unit: "큰술" }
+  ]},
+  { name: "귤샐러드", baseServings: 1, ingredients: [
+    { name: "귤", amount: 2, unit: "개" }, { name: "양상추", amount: 0.2, unit: "개" }
+  ]},
+  { name: "수박화채", baseServings: 2, ingredients: [
+    { name: "수박", amount: 0.3, unit: "개" }, { name: "설탕", amount: 1, unit: "큰술" }, { name: "물", amount: 100, unit: "ml" }
+  ]},
+  { name: "참외샐러드", baseServings: 1, ingredients: [
+    { name: "참외", amount: 1, unit: "개" }, { name: "오이", amount: 0.5, unit: "개" }, { name: "식초", amount: 1, unit: "큰술" }
+  ]},
+  { name: "복숭아샐러드", baseServings: 1, ingredients: [
+    { name: "복숭아", amount: 1, unit: "개" }, { name: "양상추", amount: 0.2, unit: "개" }, { name: "마요네즈", amount: 1, unit: "큰술" }
+  ]},
+  { name: "한국과일모둠샐러드", baseServings: 2, ingredients: [
+    { name: "배", amount: 0.3, unit: "개" }, { name: "포도", amount: 10, unit: "알" },
+    { name: "감", amount: 0.3, unit: "개" }, { name: "귤", amount: 1, unit: "개" }
   ]}
 ];
 
@@ -614,7 +742,19 @@ const IMAGENET_TO_KOREAN = {
   "mushroom": "버섯",
   "head cabbage": "양배추",
   "zucchini": "애호박",
-  "courgette": "애호박"
+  "courgette": "애호박",
+  "cauliflower": "콜리플라워",
+  "bell pepper": "파프리카",
+  "corn": "옥수수",
+  "banana": "바나나",
+  "orange": "오렌지",
+  "strawberry": "딸기",
+  "pineapple": "파인애플",
+  "ananas": "파인애플",
+  "lemon": "레몬",
+  "granny smith": "사과",
+  "fig": "무화과",
+  "pomegranate": "석류"
 };
 
 async function handleFridgeUpload(event) {
@@ -648,7 +788,7 @@ async function handleFridgeUpload(event) {
     const foundArr = [...found];
 
     if (foundArr.length === 0) {
-      statusEl.textContent = `이 모델이 인식 가능한 5개 재료(브로콜리·오이·버섯·양배추·애호박) 중 어떤 것도 찾지 못했어요. (모델이 가장 비슷하다고 본 것: "${predictions[0].className}") 아래에서 직접 입력해주세요.`;
+      statusEl.textContent = `이 모델이 인식 가능한 16개 재료(브로콜리·오이·버섯·양배추·애호박·콜리플라워·파프리카·옥수수·바나나·오렌지·딸기·파인애플·레몬·사과·무화과·석류) 중 어떤 것도 찾지 못했어요. (모델이 가장 비슷하다고 본 것: "${predictions[0].className}") 아래에서 직접 입력해주세요.`;
       return;
     }
 
@@ -666,10 +806,29 @@ async function handleFridgeUpload(event) {
 }
 
 // ---- 영수증 자동 인식 (베타): Tesseract.js 무료 OCR 사용 ----
+// 한 글자 재료(예: 물/밥/무/귤/배 등)는 다른 단어 속에 우연히 포함되어
+// 오매칭될 위험이 커서, 뒤에 숫자/수량단위가 바로 이어질 때만
+// (예: "귤3kg", "배 2개") 정교하게 인식합니다.
+// - 목록을 직접 나열하지 않고, 재료명 길이가 1글자인 것을 자동으로 찾습니다.
+function getSingleCharIngredients() {
+  const set = new Set();
+  RECIPE_DB.forEach(r => r.ingredients.forEach(i => {
+    if (i.name.length === 1) set.add(i.name);
+  }));
+  return [...set];
+}
+
+function detectPreciseSingleChar(rawText, char) {
+  // 앞: 문자열 시작 또는 공백/줄바꿈/쉼표 (다른 단어의 일부가 아니어야 함 - 예: "양배추"의 "배" 제외)
+  // 뒤: 공백 없이 또는 약간의 공백 후 숫자나 수량 단위가 바로 이어짐
+  const pattern = new RegExp(`(?:^|[\\s,\\n])${char}\\s*(?:\\d|kg|KG|g|개|봉|박스|팩|망|알|모|공기|대|장|알|캔|통)`);
+  return pattern.test(rawText);
+}
+
 function getAllKnownIngredients() {
   const set = new Set();
   RECIPE_DB.forEach(r => r.ingredients.forEach(i => {
-    if (i.name.length >= 2) set.add(i.name); // 1글자 재료(물/밥/무)는 영수증 텍스트에서 오매칭 위험이 커서 제외
+    if (i.name.length >= 2) set.add(i.name); // 2글자 이상만 기본 방식(텍스트 포함 여부)으로 매칭
   }));
   return [...set];
 }
@@ -677,7 +836,20 @@ function getAllKnownIngredients() {
 function matchIngredientsFromText(text) {
   const all = getAllKnownIngredients();
   const cleaned = text.replace(/\s+/g, ""); // OCR이 글자 사이에 엉뚱한 공백을 넣는 경우가 많아 제거 후 매칭
-  return all.filter(name => cleaned.includes(name));
+  const found = new Set(all.filter(name => cleaned.includes(name)));
+
+  // 부위명(삼겹살/차돌박이 등)이 영수증 텍스트에 있으면 일반 재료명으로도 인식
+  Object.keys(MEAT_ALIASES).forEach(alias => {
+    if (cleaned.includes(alias)) found.add(MEAT_ALIASES[alias]);
+  });
+
+  // 한 글자 재료(귤/배/물/밥/무 등 전부 자동 포함): 원본 텍스트(공백 유지)에서
+  // 숫자·수량단위가 바로 붙어있을 때만 정교하게 인식
+  getSingleCharIngredients().forEach(char => {
+    if (detectPreciseSingleChar(text, char)) found.add(char);
+  });
+
+  return [...found];
 }
 
 async function handleReceiptUpload(event) {
@@ -760,7 +932,40 @@ const NUTRITION_PER_UNIT = {
   "치즈": { kcal: 66, protein: 3.6, carb: 0.4, fat: 5.4, sodium: 140, sugar: 0.2, fiber: 0, chol: 5 },
   "라면": { kcal: 500, protein: 10, carb: 65, fat: 18, sodium: 1790, sugar: 5, fiber: 2, chol: 0 },
   "멸치": { kcal: 3.3, protein: 0.55, carb: 0, fat: 0.08, sodium: 7, sugar: 0, fiber: 0, chol: 0.7 },
-  "부추": { kcal: 0.28, protein: 0.026, carb: 0.04, fat: 0.003, sodium: 0.17, sugar: 0.01, fiber: 0.025, chol: 0 }
+  "부추": { kcal: 0.28, protein: 0.026, carb: 0.04, fat: 0.003, sodium: 0.17, sugar: 0.01, fiber: 0.025, chol: 0 },
+  "고구마": { kcal: 172, protein: 3.2, carb: 40, fat: 0.2, sodium: 72, sugar: 8.4, fiber: 6, chol: 0 },
+  "파프리카": { kcal: 47, protein: 1.5, carb: 9, fat: 0.45, sodium: 6, sugar: 6.3, fiber: 3.15, chol: 0 },
+  "옥수수": { kcal: 129, protein: 4.8, carb: 28.5, fat: 1.8, sodium: 300, sugar: 4.8, fiber: 3, chol: 0 },
+  "두유": { kcal: 0.54, protein: 0.033, carb: 0.06, fat: 0.02, sodium: 0.45, sugar: 0.04, fiber: 0.004, chol: 0 },
+  "스팸": { kcal: 630, protein: 26, carb: 4, fat: 56, sodium: 2400, sugar: 0, fiber: 0, chol: 120 },
+  "우동사리": { kcal: 254, protein: 7, carb: 54, fat: 1, sodium: 600, sugar: 1, fiber: 3, chol: 0 },
+  "청양고추": { kcal: 4, protein: 0.2, carb: 0.9, fat: 0.04, sodium: 0.7, sugar: 0.5, fiber: 0.15, chol: 0 },
+  "깻잎": { kcal: 0.5, protein: 0.06, carb: 0.1, fat: 0.0015, sodium: 0.045, sugar: 0, fiber: 0.015, chol: 0 },
+  "숙주": { kcal: 0.3, protein: 0.032, carb: 0.059, fat: 0.002, sodium: 0.05, sugar: 0.02, fiber: 0.018, chol: 0 },
+  "미역": { kcal: 1.3, protein: 0.12, carb: 0.42, fat: 0.01, sodium: 24, sugar: 0, fiber: 0.13, chol: 0 },
+  "콜리플라워": { kcal: 125, protein: 9.5, carb: 25, fat: 1.5, sodium: 150, sugar: 9.5, fiber: 10, chol: 0 },
+  "아보카도": { kcal: 320, protein: 4, carb: 18, fat: 30, sodium: 14, sugar: 1.4, fiber: 13.4, chol: 0 },
+  "토마토": { kcal: 27, protein: 1.35, carb: 5.85, fat: 0.3, sodium: 7.5, sugar: 3.9, fiber: 1.8, chol: 0 },
+  "양상추": { kcal: 75, protein: 7, carb: 14.5, fat: 1, sodium: 140, sugar: 6, fiber: 6.5, chol: 0 },
+  "소세지": { kcal: 150, protein: 6, carb: 1.5, fat: 13.5, sodium: 450, sugar: 0.5, fiber: 0, chol: 30 },
+  "만두": { kcal: 60, protein: 2, carb: 6, fat: 3, sodium: 150, sugar: 0.3, fiber: 0.3, chol: 5 },
+  "떡": { kcal: 2.3, protein: 0.04, carb: 0.5, fat: 0.005, sodium: 0.05, sugar: 0.01, fiber: 0.01, chol: 0 },
+  "청경채": { kcal: 10.4, protein: 1.2, carb: 1.76, fat: 0.16, sodium: 52, sugar: 0.96, fiber: 0.8, chol: 0 },
+  "바나나": { kcal: 107, protein: 1.3, carb: 27.6, fat: 0.36, sodium: 1.2, sugar: 14.4, fiber: 3.1, chol: 0 },
+  "오렌지": { kcal: 61, protein: 1.2, carb: 15.6, fat: 0.13, sodium: 0, sugar: 11.7, fiber: 3.1, chol: 0 },
+  "딸기": { kcal: 3.8, protein: 0.084, carb: 0.92, fat: 0.036, sodium: 0.12, sugar: 0.59, fiber: 0.24, chol: 0 },
+  "파인애플": { kcal: 450, protein: 4.5, carb: 117, fat: 0.9, sodium: 9, sugar: 90, fiber: 12.6, chol: 0 },
+  "레몬": { kcal: 29, protein: 1.1, carb: 9.3, fat: 0.3, sodium: 2, sugar: 2.5, fiber: 2.8, chol: 0 },
+  "사과": { kcal: 104, protein: 0.6, carb: 28, fat: 0.4, sodium: 2, sugar: 20, fiber: 4.8, chol: 0 },
+  "무화과": { kcal: 37, protein: 0.38, carb: 9.5, fat: 0.15, sodium: 0.5, sugar: 8, fiber: 1.45, chol: 0 },
+  "석류": { kcal: 124.5, protein: 2.55, carb: 28.5, fat: 1.8, sodium: 4.5, sugar: 21, fiber: 6, chol: 0 },
+  "배": { kcal: 142.5, protein: 1, carb: 37.5, fat: 0.25, sodium: 2.5, sugar: 25, fiber: 7.75, chol: 0 },
+  "포도": { kcal: 3.45, protein: 0.035, carb: 0.9, fat: 0.01, sodium: 0.1, sugar: 0.8, fiber: 0.045, chol: 0 },
+  "감": { kcal: 140, protein: 1.2, carb: 37.2, fat: 0.4, sodium: 2, sugar: 25, fiber: 7.2, chol: 0 },
+  "귤": { kcal: 53, protein: 0.8, carb: 13.3, fat: 0.3, sodium: 2, sugar: 10.6, fiber: 1.8, chol: 0 },
+  "수박": { kcal: 1500, protein: 30, carb: 380, fat: 7.5, sodium: 50, sugar: 300, fiber: 20, chol: 0 },
+  "참외": { kcal: 68, protein: 1.6, carb: 16, fat: 0.4, sodium: 16, sugar: 12, fiber: 1.8, chol: 0 },
+  "복숭아": { kcal: 58.5, protein: 1.35, carb: 14.25, fat: 0.375, sodium: 0, sugar: 12.6, fiber: 2.25, chol: 0 }
 };
 
 // 소금은 "꼬집"과 "작은술" 두 단위가 섞여 있어(1꼬집≈0.3g, 1작은술≈5g 소금),
@@ -829,6 +1034,25 @@ function renderChips() {
 }
 
 // ---- 기능 1+2+3: 매칭 + 1인분 환산 + 임박 우선순위 ----
+// ---- 고기 부위명 동의어 처리 ----
+// "삼겹살", "차돌박이" 처럼 구체적인 부위명은 우리 재료명(돼지고기/소고기/닭고기)에
+// 글자가 포함되지 않아 매칭이 안 되던 문제를 보완합니다.
+const MEAT_ALIASES = {
+  "삼겹살": "돼지고기", "목살": "돼지고기", "앞다리살": "돼지고기", "뒷다리살": "돼지고기",
+  "항정살": "돼지고기", "갈매기살": "돼지고기", "돈까스": "돼지고기", "돈가스": "돼지고기",
+  "차돌박이": "소고기", "양지": "소고기", "사태": "소고기", "갈비": "소고기",
+  "채끝": "소고기", "불고기감": "소고기", "우삼겹": "소고기",
+  "닭다리": "닭고기", "닭날개": "닭고기", "닭봉": "닭고기", "통닭": "닭고기",
+  "닭안심": "닭가슴살"
+};
+
+function resolveMeatAlias(text) {
+  for (const alias of Object.keys(MEAT_ALIASES)) {
+    if (text.includes(alias)) return MEAT_ALIASES[alias];
+  }
+  return null;
+}
+
 function runMatch() {
   goTo(3);
   document.getElementById("loadingBox").style.display = "block";
@@ -846,11 +1070,15 @@ function runMatch() {
       recipe.ingredients.forEach(ri => {
         const riName = ri.name.toLowerCase();
         const hit = userIngredients.some(ui => {
+          const uiAlias = resolveMeatAlias(ui);
+          if (uiAlias && uiAlias === ri.name) return true; // 부위명 → 일반 재료명 동의어 매칭
           if (ui.length < 2 || riName.length < 2) return ui === riName; // 한 글자는 완전일치만 인정
           return riName.includes(ui) || ui.includes(riName);
         });
         if (hit) matchCount++;
         if ([...urgentSet].some(u => {
+          const uAlias = resolveMeatAlias(u);
+          if (uAlias && uAlias === ri.name) return true;
           if (u.length < 2 || ri.name.length < 2) return u === ri.name;
           return ri.name.includes(u) || u.includes(ri.name);
         })) urgentHit++;
